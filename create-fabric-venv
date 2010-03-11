@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# create-fabric-venv
+#
+# Created by Matthew Rankin on 2009-09-18.
+# Copyright (c) 2009 Cumulusware, LLC. All rights reserved.
+#
+# Chicken-egg script for install Fabric in a virtualenv. 
+#
+
+
+if [ -z "$1" ]; then
+    echo "Please provide the name of the virtualenv to create"
+    exit
+fi
+
+VENV=$1
+
+# As long as the venv doesn't exist, let's get going
+if [ ! -d ~/.virtualenvs/$VENV ]; then
+
+
+    # MDR April 23, 2009: Added for virtualenvwrapper
+	if [ -x /Library/Frameworks/Python.framework/Versions/2.6/bin/virtualenvwrapper_bashrc ]; then
+	    export WORKON_HOME=$HOME/.virtualenvs
+	    export PIP_VIRTUALENV_BASE=$WORKON_HOME
+	    source /Library/Frameworks/Python.framework/Versions/2.6/bin/virtualenvwrapper_bashrc
+    fi
+
+    # Make the venv
+    mkvirtualenv $VENV
+    cdvirtualenv
+
+    # Install PyCrypto (latest version is fine)
+    pip install pycrypto
+
+    # Install Paramiko (have to use 1.7.4 because of error in 1.7.5)
+    mkdir ./src
+    cd ./src
+    curl -O http://www.lag.net/paramiko/download/paramiko-1.7.4.tar.gz
+    tar xzvf paramiko-1.7.4.tar.gz
+    cd paramiko-1.7.4
+    python setup.py install
+
+    # Install Fabric
+    # cd ~/development/fabric.github.cumulusware/
+    # python setup.py install
+    
+    workon $VENV
+    
+fi
