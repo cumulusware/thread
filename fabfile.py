@@ -11,31 +11,6 @@ import fabrichosts
 # TODO 16-Mar-10: Change to a config file instead of importing as py module
 fabrichosts.definehosts()
 
-def hostsfile(group):
-    """Loads a group of hosts from a config file.
-    group: name of the group file, one host per line
-    """
-    base_dir = '~/.dsh/group/'
-    
-    from os.path import join, abspath, expanduser
-    
-    filename = abspath(expanduser(join(base_dir, group)))
-    try:
-        fhosts = open(filename)
-    except IOError:
-        abort('file not found: %s' % filename)
-    
-    def has_data(line):
-        """'line' is not commented out and not just whitespace."""
-        return line.strip() and not line.startswith('#')
-    
-    config.fab_hosts = [ line.strip() for line in fhosts
-                        if has_data(line)]
-    
-
-def _host_type():
-    run('uname -s')
-
 def site_package():
     """
     Determine the site package
