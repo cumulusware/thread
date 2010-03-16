@@ -8,6 +8,7 @@ import random
 import getpass
 import fabrichosts
 
+# TODO 16-Mar-10: Change to a config file instead of importing as py module
 fabrichosts.definehosts()
 
 def hostsfile(group):
@@ -57,35 +58,12 @@ def new_user(username, admin=False):
 def reboot():
     reboot()
 
-# Steps that are taken the first time you log into a slice
-# 0. ssh root@<sliceip>
-# 1. Asked to add the RSA key fingerprint (yes/no)
-# 2. Enter the root password given by Slicehost
-# 3. Create the admin/sshers groups: `addgroup admin` and `addgroup sshers`
-# 4. Add the admin group to the sudoers file with:
-#   `EDITOR=vi visudo`
-#   %admin ALL=(ALL) ALL
-# 5. Create a new admin user with `adduser <username>` and answer questions
-#   Can Fabric handle the questions that are asked when creating a new user?
-#   Fabric cannot handle answering questions the way that pyExpect does.
-#   Therefore, I should use useradd which isn't interactive. The adduser
-#   command is an Ubuntu only command, so instead I should use the more
-#   generic Linux/UNIX useradd command. The adduser command does:
-#   1. Adds user <username> given
-#   2. Adds a new group <username>
-#   3. Adds user <username> to the group <username>
-#   4. Creates the home directory /home/<username>
-#   5. Copies files from /etc/skel to the home directory
-#   The other option is to use adduser in a non-interactive mode
-#       adduser <username> --disabled-password --gecos ""
-# 6. Add the admin user to the admin group with `adduser <username> admin`
-# 7. Remove the password from the root user with `passwd --lock root`
-
 @roles('newslice')
 def config_new_slice():
     """
     Configures a new Slicehost slice
     """
+    # TODO 16-Mar-10: Refactor to make more modular
     root_password = getpass.getpass("Root's password given by SliceManager: ")
     admin_username = prompt("Enter a username for the admin user to create: ")
     admin_password = getpass.getpass("Enter a password for the admin user: ")
@@ -112,12 +90,19 @@ def config_new_slice():
     )
     # Disable logging in as root by locking root's password
     run('passwd --lock root')
+    
+    
+    
+    # TODO 16-Mar-10: Add code to create script to ssh into server. Better
+    # yet, I should create a single script for SSHing into servers and
+    # add a host_slug as a CLI argument
 
 @roles('newslice')
 def config_rebuilt_slice():
     """
     Configures a rebuilt Slicehost slice
     """
+    # TODO 16-Mar-10: Need to also delete the entry in ~/.ssh/known_hosts
     with settings(disable_known_hosts=True):
         config_new_slice()
 
@@ -125,4 +110,4 @@ def remove_ip_from_known_hosts(ip_address):
     """
     Removes an IP address from ~/.ssh/known_hosts
     """
-    
+    # TODO 16-Mar-10: Develop remove_ip_from_known_hosts function
