@@ -31,6 +31,9 @@ def new_user(username, admin=False):
     )
 
 def reboot():
+    """
+    Reboot the server
+    """
     reboot()
 
 @roles('newslice')
@@ -42,6 +45,7 @@ def config_new_slice():
     root_password = getpass.getpass("Root's password given by SliceManager: ")
     admin_username = prompt("Enter a username for the admin user to create: ")
     admin_password = getpass.getpass("Enter a password for the admin user: ")
+    new_ssh_port = prompt("Enter the port to use for SSH (Default=22): ")
     env.user = 'root'
     env.password = root_password
     # Create the admin group and add it to the sudoers file
@@ -63,10 +67,30 @@ def config_new_slice():
         username=admin_username,
         password=admin_password)
     )
+    # TODO 16-Mar-10: Add commands to configure the default editor
+    # Interactively, the command I used was `update-alternatives --config
+    # editor`
+    
     # Disable logging in as root by locking root's password
     run('passwd --lock root')
-    
-    
+    # Change to using the new admin user
+    env.user = admin_username
+    env.password = admin_password
+    # Change the SSH port
+    # TODO 16-Mar-10: Refactor to not use Perl
+    sudo("perl -pi -e 's/(Port)\s+22$/\\1 {ssh_port}/g' {sshd_cmd}".format(
+        ssh_port=new_ssh_port,
+        sshd_cmd='/etc/ssh/sshd_config')
+    )
+    # Only allow SSH login for the groups admin and sshlogin
+    sudo("perl -pi -e 's/(PermitRootLogin)\s+yes$/\\1 no/g' {sshd_cmd}".format(
+        sshd_cmd='/etc/ssh/sshd_config')
+    )
+    # TODO 16-Mar-10: Refactor to not hardcode the groups
+    sudo("perl -pi -e 's/(# Authentication:)$/\\1\\n{grp}/g' {sshd_cmd}".format(
+        grp='AllowGroups admin sshlogin',
+        sshd_cmd='/etc/ssh/sshd_config')
+    )
     
     # TODO 16-Mar-10: Add code to create script to ssh into server. Better
     # yet, I should create a single script for SSHing into servers and
