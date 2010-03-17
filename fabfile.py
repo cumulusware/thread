@@ -117,6 +117,16 @@ def config_new_slice():
     # Reload ssh
     sudo('/etc/init.d/ssh reload')
     env.port = new_ssh_port
+    # Remove packages installed by default
+    package_remove_options = '--quiet --assume-yes'
+    packages_to_remove = (
+        'x11-common',
+    )
+    for remove_package in packages_to_remove:
+        sudo("apt-get remove {options} {package}".format(
+            options=package_remove_options,
+            package=remove_package)
+        )
     # Install standard packages
     # TODO 16-Mar-10: Refactor to read config file of packages to install
     package_install_options = '--quiet --install-recommends --assume-yes'
