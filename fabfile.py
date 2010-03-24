@@ -1,7 +1,6 @@
 from __future__ import print_function
 from fabric.api import run, sudo, local, prompt, abort, env, roles, \
     settings, cd
-import pexpect
 import sys
 import string
 import time
