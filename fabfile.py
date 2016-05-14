@@ -11,6 +11,8 @@ import fabrichosts
 # TODO 16-Mar-10: Refactor to add unit testing
 # TODO 16-Mar-10: Add license information
 # TODO 16-Mar-10: Fix Fabric err: stdin: is not a tty
+# TODO 19-Dec-11: Run agu and agd before installing packages as part of the
+# config_new_slice.
 
 # TODO 16-Mar-10: Change to a config file instead of importing as py module
 fabrichosts.definehosts()
@@ -52,6 +54,7 @@ def config_new_slice():
     admin_username = prompt("Enter a username for the admin user to create: ")
     admin_password = getpass.getpass("Enter a password for the admin user: ")
     new_ssh_port = prompt("Enter the port to use for SSH (Default=22): ")
+    # TODO(mdr): If new_ssh_port is not a valid integer, then set to 22.
     env.user = 'root'
     env.password = root_password
     # Create the admin and ssher groups and add admin to the sudoers file
@@ -135,6 +138,7 @@ def config_new_slice():
         'apt-show-versions',
         'zip',
         'unzip',
+        'ufw'
     )
     for install_package in packages_to_install:
         sudo("apt-get install {options} {package}".format(
@@ -164,8 +168,72 @@ def config_rebuilt_slice():
     with settings(disable_known_hosts=True):
         config_new_slice()
 
+
 def remove_ip_from_known_hosts(ip_address):
     """
     Removes an IP address from ~/.ssh/known_hosts
     """
     # TODO 16-Mar-10: Develop remove_ip_from_known_hosts function
+
+
+def install_nginx():
+    """
+    Installs and configures nginx
+    """
+    package_install_options = '--quiet --install-recommends --assume-yes'
+    packages_to_install = (
+        'nginx',
+    )
+    for install_package in packages_to_install:
+        sudo("apt-get install {options} {package}".format(
+            options=package_install_options,
+            package=install_package)
+        )
+    # Also want to configure nginx
+    # <http://articles.slicehost.com/2009/3/5/ubuntu-intrepid-nginx-configuration>
+    # recommends changing worker_process from 1 to 4
+
+
+def add_nginx_site(site):
+    """
+    Adds nginx configuration file to /etc/nginx/sites-available
+    """
+    site_config_src = os.path.join(
+        env.root_dir, 'webserver-config', site)
+    site_config_dest = os.path.join('/etc/nginx/sites-available', site)
+    site_config_temp_dest = os.path.join('~/temp', site)
+    run('mkdir -p {dir}'.format(dir='~/temp'))
+    put(site_config_src, site_config_temp_dest)
+    sudo('mv {src} {dest}'.format(src=site_config_temp_dest,
+         dest=site_config_dest))
+    sudo('chown root:root {file}'.format(file=site_config_dest))
+
+
+def enable_site(site):
+    """
+    Enables the Nginx site
+    """
+    with settings(warn_only=True):
+        sudo('ln -s {avail}/{site} {enabled}/{site}'.format(
+            avail='/etc/nginx/sites-available',
+            enabled='/etc/nginx/sites-enabled',
+            site=site))
+
+
+def disable_site(site):
+    """
+    Disables the Nginx site
+    """
+    with settings(warn_only=True):
+        sudo('rm /etc/nginx/sites-enabled/{site}'.format(site=site))
+
+
+def configure_firewall():
+    """
+    Configures Ubuntu's UFW firewall
+    """
+    firewall_script = "ufw allow {ssh_port}/tcp; ufw default deny; \
+        ufw allow http; ufw allow https; ufw enable".format(
+            ssh_port=env.port
+        )
+    sudo(firewall_script)
