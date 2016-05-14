@@ -1,12 +1,25 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2010-2016 The thread developers. All rights reserved.
+# Project site: https://github.com/cumulusware/thread
+# Use of this source code is governed by a MIT-style license that
+# can be found in the LICENSE.txt file for the project.
+
+# Try to future proof code so that it's Python 3.x ready
 from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+# Standard module imports
+import getpass
+import os
+
+# Fabric imports
 from fabric.api import cd, env, local, prompt, roles, run, settings, sudo
 from fabric.operations import put
-import os
-import getpass
 import fabrichosts
 
 # TODO 16-Mar-10: Refactor to add unit testing
-# TODO 16-Mar-10: Add license information
 # TODO 16-Mar-10: Fix Fabric err: stdin: is not a tty
 # TODO 19-Dec-11: Run agu and agd before installing packages as part of the
 # config_new_slice.
