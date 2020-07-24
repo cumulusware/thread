@@ -6,11 +6,6 @@
 - over ownership of this repository.
 
 
-[![PyPi Version][pypi ver image]][pypi ver link]
-[![Build Status][travis image]][travis link]
-[![Coverage Status][coveralls image]][coveralls link]
-[![License Badge][license image]][LICENSE.txt]
-
 ## Purpose ##
 
 The goal is to create a quick, repeatable, automated process to manage Ubuntu
@@ -59,17 +54,10 @@ a pull request.  [GitHub Flow][] is summarized as:
 [thread][] is released under the MIT license. Please see the
 [LICENSE.txt][] file for more information.
 
-[coveralls image]: http://img.shields.io/coveralls/cumulusware/thread/master.svg
-[coveralls link]: https://coveralls.io/r/cumulusware/thread
 [fabric]: http://www.fabfile.org/
 [github flow]: http://scottchacon.com/2011/08/31/github-flow.html
 [LICENSE.txt]: https://github.com/cumulusware/thread/blob/master/LICENSE.txt
-[license image]: http://img.shields.io/pypi/l/thread.svg
 [noller-python]: http://jessenoller.com/2009/03/16/so-you-want-to-use-python-on-the-mac/
 [pull request]: https://help.github.com/articles/using-pull-requests
-[pypi ver image]: http://img.shields.io/pypi/v/thread.svg
-[pypi ver link]: https://pypi.python.org/pypi/thread/
 [scott chacon]: http://scottchacon.com/about.html
 [thread]: https://github.com/cumulusware/thread
-[travis image]: http://img.shields.io/travis/cumulusware/thread/master.svg
-[travis link]: https://travis-ci.org/cumulusware/thread
