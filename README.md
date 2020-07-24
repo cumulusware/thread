@@ -1,7 +1,10 @@
 # README #
 
-* **Project:** Thread
-* **Goal:** Manage and deploy Ubuntu servers
+- **Project:** Thread
+- **Goal:** Manage and deploy Ubuntu servers
+- **Status:** Unmaintained at this point. Open an issue if you want to take
+- over ownership of this repository.
+
 
 [![PyPi Version][pypi ver image]][pypi ver link]
 [![Build Status][travis image]][travis link]
