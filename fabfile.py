@@ -15,8 +15,7 @@ import getpass
 import os
 
 # Fabric imports
-from fabric.api import cd, env, local, prompt, roles, run, settings, sudo
-from fabric.operations import put
+from fabric.api import cd, env, local, prompt, put, roles, run, settings, sudo
 import fabrichosts
 
 # TODO 16-Mar-10: Refactor to add unit testing
