@@ -1,5 +1,5 @@
 ecdsa==0.15
 Fabric==1.14.1
 invoke==1.4.1
-paramiko==2.7.1
+paramiko==3.4.0
 pycrypto==2.6.1
